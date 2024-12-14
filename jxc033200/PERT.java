@@ -38,7 +38,11 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 		v.duration = d;
     }
 
-    // Implement the PERT algorithm. Returns false if the graph g is not a DAG.
+/**
+ * Sets the duration of a task (vertex) in the PERT graph and initializes its attributes.
+ * @param u the vertex representing the task for which the duration is being set
+ * @param d the duration of the task (in time units)
+ */
     public boolean pert() {
 		// Step 1: Get topological order
 		LinkedList<Vertex> topOrder = topologicalOrder();
@@ -51,7 +55,7 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 			PERTVertex pu = get(u);
 
 			// Earliest finish time = Earliest start time + duration
-			pu.earliestFinish = pu.earliestStart + getDuration(u);
+			pu.earliestFinish = pu.earliestStart + get(u).duration;
 
 			// Update earliest start time for adjacent vertices
 			for (Edge e : g.outEdges(u)) {
@@ -80,7 +84,7 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 			PERTVertex pu = get(u);
 
 			// Latest start time = Latest finish time - duration
-			pu.latestStart = pu.latestFinish - getDuration(u);
+			pu.latestStart = pu.latestFinish - get(u).duration;
 
 			// Update latest finish time for adjacent vertices
 			for (Edge e : g.inEdges(u)) {
@@ -99,13 +103,10 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 		return true; // Successfully computed PERT
     }
 	
-	private int getDuration(Vertex u) {
-		return get(u).duration; 
-	}
 
     // Find a topological order of g using DFS
     LinkedList<Vertex> topologicalOrder() {
-		finishList = new LinkedList<>();
+	finishList = new LinkedList<>();
     	HashSet<Vertex> visited = new HashSet<>();
 		for (Vertex v : g) {
 			if (!visited.contains(v)) {
